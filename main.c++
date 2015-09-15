@@ -18,6 +18,18 @@ bool is_palindrome(const string &s){
     return part1 == part2_r;
 }
 
+pair<string, string> split_and_mirror(const string & s){
+    // Split the word in two halves and reverse second half
+    size_t half_length = (s.size())/2;
+    // Create a string, containing only the first half of the original
+    string part1(s.begin(), s.begin()+half_length);
+    // Create a string, containing only the second half in REVERSE order
+    // of the original
+    string part2_r(s.rbegin(), s.rbegin()+half_length);
+
+    return make_pair(part1, part2_r);
+}
+
 string make_pal(const string &s){
     string new_s;
 
@@ -37,7 +49,30 @@ string make_pal(const string &s){
             return new_s;
         }
     }
-    
+
+    new_s = string(s);
+    pair<string, string> halves = split_and_mirror(new_s);
+    string::iterator new_s_itr = new_s.begin();     // Note: we will loop over new_s rather than halves.first
+    string::iterator p2_iter = halves.second.begin();
+
+    char inserter = 'y';    // character to insert. Initialize random (here y).
+    // Loop over both halves
+    for (; new_s_itr != new_s.end() && p2_iter != halves.second.end(); new_s_itr++, p2_iter++){
+        if(*new_s_itr != *p2_iter){
+            inserter = *p2_iter;
+            break;
+        }
+    }
+ 
+
+    // Insert character
+    new_s.insert(new_s_itr, inserter);
+    //cout << "Created " << new_s << endl; 
+
+    if(is_palindrome(new_s) ){
+        return new_s;
+    }
+
     // If none of our attempts worked, return NA   
     return "NA";
 }
