@@ -50,6 +50,32 @@ string make_pal(const string &s){
         }
     }
 
+    // If the original word was a palindrome, add a letter in the middle to keep it a palindrome
+    if (is_palindrome(s)){
+        new_s = s;
+        // Iterator to middle character is used a lot
+        // word of 6 characters --> middle_itr points to 4th char
+        // Word of 7 characters --> middle_itr points to 4th char 
+        string::iterator middle_itr = new_s.begin() + (new_s.size()/2);
+        // For even number of characters, add random character in the middle
+        if (s.size() % 2 == 0){
+            new_s.insert(middle_itr,  'v');
+            if (is_palindrome(new_s)){  
+                return new_s;
+            }
+        }
+        // Else copy the middle character
+        else{
+            char middle_char = *middle_itr;
+            new_s.insert(middle_itr, middle_char);
+            if(is_palindrome(new_s)){
+                return new_s;
+            }
+        }
+    }
+
+
+    // In all other cases we need to process all characters
     new_s = string(s);
     pair<string, string> halves = split_and_mirror(new_s);
     string::iterator new_s_itr = new_s.begin();     // Note: we will loop over new_s rather than halves.first
