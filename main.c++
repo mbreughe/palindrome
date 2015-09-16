@@ -75,30 +75,46 @@ string make_pal(const string &s){
     }
 
 
-    // In all other cases we need to process all characters
-    new_s = string(s);
-    pair<string, string> halves = split_and_mirror(new_s);
-    string::iterator new_s_itr = new_s.begin();     // Note: we will loop over new_s rather than halves.first
+    // In all other cases we need to process all characters until we find two characters that don't match
+    pair<string, string> halves = split_and_mirror(s);
+    string::iterator p1_iter = halves.first.begin(); 
     string::iterator p2_iter = halves.second.begin();
 
-    char inserter = 'y';    // character to insert. Initialize random (here y).
+    char inserter_left = 'y';    // character to insert. Initialize random (here y).
+    char inserter_right = 'y';    // character to insert. Initialize random (here y).
+    size_t insert_pos = 0; // Position at which we will attempt insertion (either starting at front or back)
+
     // Loop over both halves
-    for (; new_s_itr != new_s.end() && p2_iter != halves.second.end(); new_s_itr++, p2_iter++){
-        if(*new_s_itr != *p2_iter){
-            inserter = *p2_iter;
+    for (; p1_iter != halves.first.end() && p2_iter != halves.second.end(); p1_iter++, p2_iter++){
+        insert_pos ++;
+        if(*p1_iter != *p2_iter){
+            inserter_left = *p2_iter;
+            inserter_right = *p1_iter;
             break;
         }
     }
- 
 
-    // Insert character
-    new_s.insert(new_s_itr, inserter);
-    //cout << "Created " << new_s << endl; 
+    // We now have two inserter characters to attempt to build up a palindrome
 
-    if(is_palindrome(new_s) ){
+    // Attempt insertion from left:
+    new_s = s;
+    new_s.insert(new_s.begin() + insert_pos - 1, inserter_left);
+
+    if (is_palindrome(new_s)){
         return new_s;
     }
 
+    // Attempt to insert from the right:
+    new_s = s;
+    new_s.insert(new_s.end() - insert_pos + 1, inserter_right);
+    
+    if (is_palindrome(new_s)){
+        return new_s;
+    }
+
+    
+
+    
     // If none of our attempts worked, return NA   
     return "NA";
 }
